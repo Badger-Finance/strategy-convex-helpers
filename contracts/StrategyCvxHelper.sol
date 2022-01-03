@@ -31,7 +31,12 @@ import "deps/BaseStrategy.sol";
     curve instead of Sushiswap.
     * Implemented the _withdrawAll() function
 */
-contract StrategyCvxHelper is BaseStrategy, CurveSwapper, UniswapSwapper, TokenSwapPathRegistry {
+contract StrategyCvxHelper is
+    BaseStrategy,
+    CurveSwapper,
+    UniswapSwapper,
+    TokenSwapPathRegistry
+{
     using SafeERC20Upgradeable for IERC20Upgradeable;
     using AddressUpgradeable for address;
     using SafeMathUpgradeable for uint256;
@@ -44,19 +49,29 @@ contract StrategyCvxHelper is BaseStrategy, CurveSwapper, UniswapSwapper, TokenS
     address public constant cvx = 0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B;
     address public constant cvxCrv = 0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7;
     address public constant usdc = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
-    address public constant threeCrv = 0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490;
+    address public constant threeCrv =
+        0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490;
 
-    IERC20Upgradeable public constant crvToken = IERC20Upgradeable(0xD533a949740bb3306d119CC777fa900bA034cd52);
-    IERC20Upgradeable public constant cvxToken = IERC20Upgradeable(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
-    IERC20Upgradeable public constant cvxCrvToken = IERC20Upgradeable(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
-    IERC20Upgradeable public constant usdcToken = IERC20Upgradeable(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
-    IERC20Upgradeable public constant threeCrvToken = IERC20Upgradeable(0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490);
+    IERC20Upgradeable public constant crvToken =
+        IERC20Upgradeable(0xD533a949740bb3306d119CC777fa900bA034cd52);
+    IERC20Upgradeable public constant cvxToken =
+        IERC20Upgradeable(0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B);
+    IERC20Upgradeable public constant cvxCrvToken =
+        IERC20Upgradeable(0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7);
+    IERC20Upgradeable public constant usdcToken =
+        IERC20Upgradeable(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+    IERC20Upgradeable public constant threeCrvToken =
+        IERC20Upgradeable(0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490);
 
     // ===== Convex Registry =====
-    CrvDepositor public constant crvDepositor = CrvDepositor(0x8014595F2AB54cD7c604B00E9fb932176fDc86Ae); // Convert CRV -> cvxCRV/ETH SLP
-    IBooster public constant booster = IBooster(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
-    ICvxRewardsPool public constant cvxRewardsPool = ICvxRewardsPool(0xCF50b810E57Ac33B91dCF525C6ddd9881B139332);
-    IBaseRewardsPool public constant cvxCrvRewardsPool = IBaseRewardsPool(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
+    CrvDepositor public constant crvDepositor =
+        CrvDepositor(0x8014595F2AB54cD7c604B00E9fb932176fDc86Ae); // Convert CRV -> cvxCRV/ETH SLP
+    IBooster public constant booster =
+        IBooster(0xF403C135812408BFbE8713b5A23a04b3D48AAE31);
+    ICvxRewardsPool public constant cvxRewardsPool =
+        ICvxRewardsPool(0xCF50b810E57Ac33B91dCF525C6ddd9881B139332);
+    IBaseRewardsPool public constant cvxCrvRewardsPool =
+        IBaseRewardsPool(0x3Fe65692bfCD0e6CF84cB1E7d24108E434A7587e);
 
     uint256 public constant MAX_UINT_256 = uint256(-1);
 
@@ -65,7 +80,12 @@ contract StrategyCvxHelper is BaseStrategy, CurveSwapper, UniswapSwapper, TokenS
 
     event HarvestState(uint256 timestamp, uint256 blockNumber);
 
-    event WithdrawState(uint256 toWithdraw, uint256 preWant, uint256 postWant, uint256 withdrawn);
+    event WithdrawState(
+        uint256 toWithdraw,
+        uint256 preWant,
+        uint256 postWant,
+        uint256 withdrawn
+    );
 
     struct TokenSwapData {
         address tokenIn;
@@ -73,7 +93,11 @@ contract StrategyCvxHelper is BaseStrategy, CurveSwapper, UniswapSwapper, TokenS
         uint256 wantGained;
     }
 
-    event TendState(uint256 crvTended, uint256 cvxTended, uint256 cvxCrvHarvested);
+    event TendState(
+        uint256 crvTended,
+        uint256 cvxTended,
+        uint256 cvxCrvHarvested
+    );
 
     function initialize(
         address _governance,
@@ -83,7 +107,13 @@ contract StrategyCvxHelper is BaseStrategy, CurveSwapper, UniswapSwapper, TokenS
         address _guardian,
         uint256[3] memory _feeConfig
     ) public initializer whenNotPaused {
-        __BaseStrategy_init(_governance, _strategist, _controller, _keeper, _guardian);
+        __BaseStrategy_init(
+            _governance,
+            _strategist,
+            _controller,
+            _keeper,
+            _guardian
+        );
 
         want = cvx;
 
@@ -106,22 +136,27 @@ contract StrategyCvxHelper is BaseStrategy, CurveSwapper, UniswapSwapper, TokenS
         return "1.1";
     }
 
-    function getName() external override pure returns (string memory) {
+    function getName() external pure override returns (string memory) {
         return "StrategyCvxHelper";
     }
 
-    function balanceOfPool() public override view returns (uint256) {
+    function balanceOfPool() public view override returns (uint256) {
         return cvxRewardsPool.balanceOf(address(this));
     }
 
-    function getProtectedTokens() public override view returns (address[] memory) {
+    function getProtectedTokens()
+        public
+        view
+        override
+        returns (address[] memory)
+    {
         address[] memory protectedTokens = new address[](2);
         protectedTokens[0] = want;
         protectedTokens[1] = cvx;
         return protectedTokens;
     }
 
-    function isTendable() public override view returns (bool) {
+    function isTendable() public view override returns (bool) {
         return false;
     }
 
@@ -143,7 +178,11 @@ contract StrategyCvxHelper is BaseStrategy, CurveSwapper, UniswapSwapper, TokenS
     }
 
     /// @dev Withdraw want from staking rewards, using earnings first
-    function _withdrawSome(uint256 _amount) internal override returns (uint256) {
+    function _withdrawSome(uint256 _amount)
+        internal
+        override
+        returns (uint256)
+    {
         // Get idle want in the strategy
         uint256 _preWant = IERC20Upgradeable(want).balanceOf(address(this));
 
@@ -198,19 +237,39 @@ contract StrategyCvxHelper is BaseStrategy, CurveSwapper, UniswapSwapper, TokenS
         // 2. Swap cvxCRV tokens to CRV
         uint256 cvxCrvBalance = cvxCrvToken.balanceOf(address(this));
         if (cvxCrvBalance > 0) {
-            uint256 minCrvOut = cvxCrvBalance.mul(MAX_FEE.sub(crvCvxCrvSlippageToleranceBps)).div(MAX_FEE);
-            _exchange(cvxCrv, crv, cvxCrvBalance, minCrvOut, crvCvxCrvPoolIndex, true);
+            uint256 minCrvOut =
+                cvxCrvBalance
+                    .mul(MAX_FEE.sub(crvCvxCrvSlippageToleranceBps))
+                    .div(MAX_FEE);
+            _exchange(
+                cvxCrv,
+                crv,
+                cvxCrvBalance,
+                minCrvOut,
+                crvCvxCrvPoolIndex,
+                true
+            );
         }
 
         // 3. Swap CRV tokens to CVX
         uint256 crvBalance = crvToken.balanceOf(address(this));
         if (crvBalance > 0) {
-            _swapExactTokensForTokens(sushiswap, crv, crvBalance, getTokenSwapPath(crv, cvx));
+            _swapExactTokensForTokens(
+                sushiswap,
+                crv,
+                crvBalance,
+                getTokenSwapPath(crv, cvx)
+            );
         }
 
         // Track harvested + converted coin balance of want
         cvxHarvested = cvxToken.balanceOf(address(this));
-        _processFee(cvx, cvxHarvested, performanceFeeGovernance, IController(controller).rewards());
+        _processFee(
+            cvx,
+            cvxHarvested,
+            performanceFeeGovernance,
+            IController(controller).rewards()
+        );
 
         // 3. Stake all CVX
         if (cvxHarvested > 0) {
