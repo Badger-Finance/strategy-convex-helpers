@@ -1,20 +1,37 @@
+import brownie
 from brownie import *
 from helpers.constants import MaxUint256
+from helpers.SnapshotManager import SnapshotManager
+from helpers.time import days
+from helpers.utils import (
+    approx,
+)
+from config.badger_config import sett_config
+import pytest
+from conftest import deploy
 
 
-def test_are_you_trying(deployer, sett, strategy, want):
+@pytest.mark.parametrize(
+    "sett_id",
+    sett_config.helpers,
+)
+def test_are_you_trying(sett_id):
     """
     Verifies that you set up the Strategy properly
     """
     # Setup
+    deployed = deploy(sett_config.helpers[sett_id])
+
+    deployer = deployed.deployer
+    sett = deployed.sett
+    want = deployed.want
+    strategy = deployed.strategy
+
     startingBalance = want.balanceOf(deployer)
 
     depositAmount = startingBalance // 2
     assert startingBalance >= depositAmount
     assert startingBalance >= 0
-    # End Setup
-
-    # Deposit
     assert want.balanceOf(sett) == 0
 
     want.approve(sett, MaxUint256, {"from": deployer})
@@ -33,14 +50,8 @@ def test_are_you_trying(deployer, sett, strategy, want):
     # Did the strategy do something with the asset?
     assert want.balanceOf(strategy) < available
 
-    # Use this if it should invest all
-    # assert want.balanceOf(strategy) == 0
+    ## End Setup
 
-    # Change to this if the strat is supposed to hodl and do nothing
-    # assert strategy.balanceOf(want) = depositAmount
-
-    ## TEST 2: Is the Harvest profitable?
     harvest = strategy.harvest({"from": deployer})
-    event = harvest.events["Harvest"]
-    # If it doesn't print, we don't want it
-    assert event["harvested"] > 0
+
+    harvest.events["Harvest"]["harvested"] > 0

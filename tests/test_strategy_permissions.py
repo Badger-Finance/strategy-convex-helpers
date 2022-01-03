@@ -1,8 +1,10 @@
 import brownie
 from brownie import *
 from helpers.constants import MaxUint256, AddressZero
-from helpers.SnapshotManager import SnapshotManager
 from helpers.time import days
+from config.badger_config import sett_config
+import pytest
+from conftest import deploy
 
 
 def state_setup(deployer, sett, controller, strategy, want):
@@ -43,7 +45,20 @@ def state_setup(deployer, sett, controller, strategy, want):
     accounts.at(controller, force=True)
 
 
-def test_strategy_action_permissions(deployer, sett, controller, strategy, want):
+@pytest.mark.parametrize(
+    "sett_id",
+    sett_config.helpers,
+)
+def test_strategy_action_permissions(sett_id):
+    # Setup
+    deployed = deploy(sett_config.helpers[sett_id])
+
+    deployer = deployed.deployer
+    sett = deployed.sett
+    want = deployed.want
+    strategy = deployed.strategy
+    controller = deployed.controller
+
     state_setup(deployer, sett, controller, strategy, want)
 
     tendable = strategy.isTendable()
@@ -102,9 +117,15 @@ def test_strategy_action_permissions(deployer, sett, controller, strategy, want)
             strategy.withdrawOther(controller, {"from": actor})
 
 
-def test_strategy_config_permissions(strategy):
-    randomUser = accounts[6]
+@pytest.mark.parametrize(
+    "sett_id",
+    sett_config.helpers,
+)
+def test_strategy_config_permissions(sett_id):
+    # Setup
+    deployed = deploy(sett_config.helpers[sett_id])
 
+    strategy = deployed.strategy
     randomUser = accounts[8]
     # End Setup
 
@@ -156,8 +177,20 @@ def test_strategy_config_permissions(strategy):
         strategy.setPerformanceFeeStrategist(0, {"from": randomUser})
 
 
-def test_strategy_pausing_permissions(deployer, sett, controller, strategy, want):
+@pytest.mark.parametrize(
+    "sett_id",
+    sett_config.helpers,
+)
+def test_strategy_pausing_permissions(sett_id):
     # Setup
+    deployed = deploy(sett_config.helpers[sett_id])
+
+    deployer = deployed.deployer
+    sett = deployed.sett
+    want = deployed.want
+    strategy = deployed.strategy
+    controller = deployed.controller
+
     state_setup(deployer, sett, controller, strategy, want)
     randomUser = accounts[8]
     # End Setup
@@ -210,8 +243,20 @@ def test_strategy_pausing_permissions(deployer, sett, controller, strategy, want
         strategy.tend({"from": strategyKeeper})
 
 
-def test_sett_pausing_permissions(deployer, sett, controller, strategy, want):
+@pytest.mark.parametrize(
+    "sett_id",
+    sett_config.helpers,
+)
+def test_sett_pausing_permissions(sett_id):
     # Setup
+    deployed = deploy(sett_config.helpers[sett_id])
+
+    deployer = deployed.deployer
+    sett = deployed.sett
+    want = deployed.want
+    strategy = deployed.strategy
+    controller = deployed.controller
+
     state_setup(deployer, sett, controller, strategy, want)
     randomUser = accounts[8]
     # End Setup
@@ -266,7 +311,20 @@ def test_sett_pausing_permissions(deployer, sett, controller, strategy, want):
     sett.withdrawAll({"from": deployer})
 
 
-def test_sett_config_permissions(deployer, sett, controller, strategy, want):
+@pytest.mark.parametrize(
+    "sett_id",
+    sett_config.helpers,
+)
+def test_sett_config_permissions(sett_id):
+    # Setup
+    deployed = deploy(sett_config.helpers[sett_id])
+
+    deployer = deployed.deployer
+    sett = deployed.sett
+    want = deployed.want
+    strategy = deployed.strategy
+    controller = deployed.controller
+
     state_setup(deployer, sett, controller, strategy, want)
     randomUser = accounts[8]
     assert sett.strategist() == AddressZero
@@ -303,8 +361,20 @@ def test_sett_config_permissions(deployer, sett, controller, strategy, want):
     assert sett.keeper() == validActor
 
 
-def test_sett_earn_permissions(deployer, sett, controller, strategy, want):
+@pytest.mark.parametrize(
+    "sett_id",
+    sett_config.helpers,
+)
+def test_sett_earn_permissions(sett_id):
     # Setup
+    deployed = deploy(sett_config.helpers[sett_id])
+
+    deployer = deployed.deployer
+    sett = deployed.sett
+    want = deployed.want
+    strategy = deployed.strategy
+    controller = deployed.controller
+
     state_setup(deployer, sett, controller, strategy, want)
     randomUser = accounts[8]
     assert sett.strategist() == AddressZero
