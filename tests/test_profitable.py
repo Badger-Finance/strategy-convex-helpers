@@ -8,6 +8,7 @@ from conftest import deploy
 
 MAX_BASIS = 10000
 
+
 @pytest.mark.parametrize(
     "sett_id",
     sett_config.helpers,

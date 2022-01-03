@@ -5,6 +5,7 @@ from config.badger_config import sett_config
 import pytest
 from conftest import deploy
 
+
 @pytest.mark.parametrize(
     "sett_id",
     sett_config.helpers,
@@ -15,7 +16,7 @@ def test_deploy_settings(sett_id):
     """
     config = sett_config.helpers[sett_id]
     deployed = deploy(config)
-    
+
     strategy = deployed.strategy
 
     protected_tokens = strategy.getProtectedTokens()

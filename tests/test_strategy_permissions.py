@@ -7,7 +7,6 @@ import pytest
 from conftest import deploy
 
 
-
 def state_setup(deployer, sett, controller, strategy, want):
     startingBalance = want.balanceOf(deployer)
 

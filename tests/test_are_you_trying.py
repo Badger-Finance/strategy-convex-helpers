@@ -10,6 +10,7 @@ from config.badger_config import sett_config
 import pytest
 from conftest import deploy
 
+
 @pytest.mark.parametrize(
     "sett_id",
     sett_config.helpers,

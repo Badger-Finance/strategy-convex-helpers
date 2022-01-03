@@ -90,11 +90,7 @@ def deploy(sett_config):
     controller.setStrategy(want, strategy, {"from": deployer})
 
     # Generate test want for user
-    generate_test_assets(
-        deployer, 
-        sett_config.test_config.path, 
-        Wei("5 ether")
-    )
+    generate_test_assets(deployer, sett_config.test_config.path, Wei("5 ether"))
 
     assert want.balanceOf(deployer.address) > 0
 
