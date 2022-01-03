@@ -1,4 +1,4 @@
-from brownie import *
+from brownie import interface, chain
 from tabulate import tabulate
 from rich.console import Console
 from helpers.multicall import Multicall
@@ -6,7 +6,8 @@ from helpers.utils import val
 
 from helpers.snapshot.snap import Snap
 
-from config.StrategyResolver import StrategyResolver
+from config.StrategyCvxCrvHelperResolver import StrategyCvxCrvHelperResolver
+from config.StrategyCvxHelperResolver import StrategyCvxHelperResolver
 
 console = Console()
 
@@ -73,7 +74,10 @@ class SnapshotManager:
 
     def init_resolver(self, name):
         print("init_resolver", name)
-        return StrategyResolver(self)
+        if name == "StrategyCvxCrvHelper":
+            return StrategyCvxCrvHelperResolver(self)
+        elif name == "StrategyCvxHelper":
+            return StrategyCvxHelperResolver(self)
 
     def settTend(self, overrides, confirm=True):
         user = overrides["from"].address
