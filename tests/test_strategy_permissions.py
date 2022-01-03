@@ -48,11 +48,11 @@ def state_setup(deployer, sett, controller, strategy, want):
 
 @pytest.mark.parametrize(
     "sett_id",
-    sett_config,
+    sett_config.helpers,
 )
 def test_strategy_action_permissions(sett_id):
     # Setup
-    deployed = deploy(sett_config[sett_id])
+    deployed = deploy(sett_config.helpers[sett_id])
 
     deployer = deployed.deployer
     sett = deployed.sett
@@ -120,11 +120,11 @@ def test_strategy_action_permissions(sett_id):
 
 @pytest.mark.parametrize(
     "sett_id",
-    sett_config,
+    sett_config.helpers,
 )
 def test_strategy_config_permissions(sett_id):
     # Setup
-    deployed = deploy(sett_config[sett_id])
+    deployed = deploy(sett_config.helpers[sett_id])
 
     strategy = deployed.strategy
     randomUser = accounts[8]
@@ -180,11 +180,11 @@ def test_strategy_config_permissions(sett_id):
 
 @pytest.mark.parametrize(
     "sett_id",
-    sett_config,
+    sett_config.helpers,
 )
 def test_strategy_pausing_permissions(sett_id):
     # Setup
-    deployed = deploy(sett_config[sett_id])
+    deployed = deploy(sett_config.helpers[sett_id])
 
     deployer = deployed.deployer
     sett = deployed.sett
@@ -246,11 +246,11 @@ def test_strategy_pausing_permissions(sett_id):
 
 @pytest.mark.parametrize(
     "sett_id",
-    sett_config,
+    sett_config.helpers,
 )
 def test_sett_pausing_permissions(sett_id):
     # Setup
-    deployed = deploy(sett_config[sett_id])
+    deployed = deploy(sett_config.helpers[sett_id])
 
     deployer = deployed.deployer
     sett = deployed.sett
@@ -314,11 +314,11 @@ def test_sett_pausing_permissions(sett_id):
 
 @pytest.mark.parametrize(
     "sett_id",
-    sett_config,
+    sett_config.helpers,
 )
 def test_sett_config_permissions(sett_id):
     # Setup
-    deployed = deploy(sett_config[sett_id])
+    deployed = deploy(sett_config.helpers[sett_id])
 
     deployer = deployed.deployer
     sett = deployed.sett
@@ -364,11 +364,11 @@ def test_sett_config_permissions(sett_id):
 
 @pytest.mark.parametrize(
     "sett_id",
-    sett_config,
+    sett_config.helpers,
 )
 def test_sett_earn_permissions(sett_id):
     # Setup
-    deployed = deploy(sett_config[sett_id])
+    deployed = deploy(sett_config.helpers[sett_id])
 
     deployer = deployed.deployer
     sett = deployed.sett

@@ -13,11 +13,11 @@ console = Console()
 
 @pytest.mark.parametrize(
     "sett_id",
-    sett_config,
+    sett_config.helpers,
 )
 def test_deposit_withdraw_single_user_flow(sett_id):
     # Setup
-    deployed = deploy(sett_config[sett_id])
+    deployed = deploy(sett_config.helpers[sett_id])
 
     deployer = deployed.deployer
     sett = deployed.sett
@@ -61,11 +61,11 @@ def test_deposit_withdraw_single_user_flow(sett_id):
 
 @pytest.mark.parametrize(
     "sett_id",
-    sett_config,
+    sett_config.helpers,
 )
 def test_single_user_harvest_flow(sett_id):
     # Setup
-    deployed = deploy(sett_config[sett_id])
+    deployed = deploy(sett_config.helpers[sett_id])
 
     deployer = deployed.deployer
     sett = deployed.sett
@@ -132,11 +132,11 @@ def test_single_user_harvest_flow(sett_id):
 
 @pytest.mark.parametrize(
     "sett_id",
-    sett_config,
+    sett_config.helpers,
 )
 def test_migrate_single_user(sett_id):
     # Setup
-    deployed = deploy(sett_config[sett_id])
+    deployed = deploy(sett_config.helpers[sett_id])
 
     deployer = deployed.deployer
     sett = deployed.sett
@@ -235,7 +235,7 @@ def test_migrate_single_user(sett_id):
 
 @pytest.mark.parametrize(
     "sett_id",
-    sett_config,
+    sett_config.helpers,
 )
 def test_withdraw_other(sett_id):
     """
@@ -244,7 +244,7 @@ def test_withdraw_other(sett_id):
     - Non-controller shouldn't be able to do either
     """
     # Setup
-    deployed = deploy(sett_config[sett_id])
+    deployed = deploy(sett_config.helpers[sett_id])
 
     deployer = deployed.deployer
     sett = deployed.sett
@@ -303,11 +303,11 @@ def test_withdraw_other(sett_id):
 
 @pytest.mark.parametrize(
     "sett_id",
-    sett_config,
+    sett_config.helpers,
 )
 def test_single_user_harvest_flow_remove_fees(sett_id):
     # Setup
-    deployed = deploy(sett_config[sett_id])
+    deployed = deploy(sett_config.helpers[sett_id])
 
     deployer = deployed.deployer
     sett = deployed.sett

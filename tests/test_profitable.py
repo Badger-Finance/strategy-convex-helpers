@@ -10,10 +10,10 @@ MAX_BASIS = 10000
 
 @pytest.mark.parametrize(
     "sett_id",
-    sett_config,
+    sett_config.helpers,
 )
 def test_is_profitable(sett_id):
-    deployed = deploy(sett_config[sett_id])
+    deployed = deploy(sett_config.helpers[sett_id])
 
     deployer = deployed.deployer
     sett = deployed.sett

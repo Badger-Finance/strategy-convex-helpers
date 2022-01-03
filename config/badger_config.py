@@ -7,28 +7,30 @@ convex = registry.convex
 whales = registry.whales
 
 sett_config = DotMap(
-    cvx=DotMap(
-        strategyName="StrategyCvxHelper",
-        params=DotMap(
-            want=registry.tokens.cvx,
-            performanceFeeStrategist=0,
-            performanceFeeGovernance=1000,
-            withdrawalFee=10,
+    helpers=DotMap(
+        cvx=DotMap(
+            strategyName="StrategyCvxHelper",
+            params=DotMap(
+                want=registry.tokens.cvx,
+                performanceFeeStrategist=0,
+                performanceFeeGovernance=1000,
+                withdrawalFee=10,
+            ),
+            test_config=DotMap(
+                path=[registry.tokens.weth, registry.tokens.cvx],
+            ),
         ),
-        test_config=DotMap(
-            path=[registry.tokens.weth, registry.tokens.cvx],
-        ),
-    ),
-    cvxCrv=DotMap(
-        strategyName="StrategyCvxCrvHelper",
-        params=DotMap(
-            want=registry.tokens.cvxCrv,
-            performanceFeeStrategist=0,
-            performanceFeeGovernance=1000,
-            withdrawalFee=10,
-        ),
-        test_config=DotMap(
-            path=[registry.tokens.weth, registry.tokens.crv, registry.tokens.cvxCrv],
+        cvxCrv=DotMap(
+            strategyName="StrategyCvxCrvHelper",
+            params=DotMap(
+                want=registry.tokens.cvxCrv,
+                performanceFeeStrategist=0,
+                performanceFeeGovernance=1000,
+                withdrawalFee=10,
+            ),
+            test_config=DotMap(
+                path=[registry.tokens.weth, registry.tokens.crv, registry.tokens.cvxCrv],
+            ),
         ),
     ),
 )

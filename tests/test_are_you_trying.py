@@ -12,14 +12,14 @@ from conftest import deploy
 
 @pytest.mark.parametrize(
     "sett_id",
-    sett_config,
+    sett_config.helpers,
 )
 def test_are_you_trying(sett_id):
     """
     Verifies that you set up the Strategy properly
     """
     # Setup
-    deployed = deploy(sett_config[sett_id])
+    deployed = deploy(sett_config.helpers[sett_id])
 
     deployer = deployed.deployer
     sett = deployed.sett
@@ -53,20 +53,4 @@ def test_are_you_trying(sett_id):
 
     harvest = strategy.harvest({"from": deployer})
 
-    ## Assert perFee for governance is exactly 10% // Round because huge numbers
-    assert approx(
-        (
-            harvest.events["PerformanceFeeGovernance"][0]["amount"]
-            + harvest.events["TreeDistribution"][0]["amount"]
-        )
-        * 0.1,
-        harvest.events["PerformanceFeeGovernance"][0]["amount"],
-        1,
-    )
-
-    ## Fail if PerformanceFeeStrategist is fired
-    try:
-        harvest.events["PerformanceFeeStrategist"]
-        assert False
-    except:
-        assert True
+    harvest.events["Harvest"]["harvested"] > 0

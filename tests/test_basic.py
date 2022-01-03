@@ -7,13 +7,13 @@ from conftest import deploy
 
 @pytest.mark.parametrize(
     "sett_id",
-    sett_config,
+    sett_config.helpers,
 )
 def test_deploy_settings(sett_id):
     """
     Verifies that you set up the Strategy properly
     """
-    config = sett_config[sett_id]
+    config = sett_config.helpers[sett_id]
     deployed = deploy(config)
     
     strategy = deployed.strategy
