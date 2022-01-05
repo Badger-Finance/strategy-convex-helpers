@@ -83,8 +83,10 @@ contract StrategyCvxCrvHelper is
     uint256 public crvCvxCrvSlippageToleranceBps;
 
     // v1.2
-    address public constant BADGER_TREE = 0x660802Fc641b154aBA66a62137e71f331B6d787A;
-    ISett public constant CVX_VAULT = ISett(0xfd05D3C7fe2924020620A8bE4961bBaA747e6305);   
+    address public constant BADGER_TREE =
+        0x660802Fc641b154aBA66a62137e71f331B6d787A;
+    ISett public constant CVX_VAULT =
+        ISett(0xfd05D3C7fe2924020620A8bE4961bBaA747e6305);
 
     // Used to signal to the Badger Tree that rewards where sent to it
     event TreeDistribution(
@@ -92,7 +94,7 @@ contract StrategyCvxCrvHelper is
         uint256 amount,
         uint256 indexed blockNumber,
         uint256 timestamp
-    ); 
+    );
 
     event HarvestState(uint256 timestamp, uint256 blockNumber);
 
@@ -156,7 +158,7 @@ contract StrategyCvxCrvHelper is
 
     /// ===== View Functions =====
     function version() external pure returns (string memory) {
-        return "1.1";
+        return "1.2";
     }
 
     function getName() external pure override returns (string memory) {
@@ -280,7 +282,7 @@ contract StrategyCvxCrvHelper is
 
         // 3. Lock CVX for CRV
         uint256 cvxTokenBalance = cvxToken.balanceOf(address(this));
-        
+
         if (cvxTokenBalance > 0) {
             uint256 prevTreeBalance = CVX_VAULT.balanceOf(BADGER_TREE);
             cvxToken.safeApprove(address(CVX_VAULT), 0); //Reset to avoid dust
@@ -292,7 +294,7 @@ contract StrategyCvxCrvHelper is
                 afterTreeBalance.sub(prevTreeBalance),
                 block.number,
                 block.timestamp
-            ); 
+            );
         }
 
         // 4. Convert CRV -> cvxCRV
