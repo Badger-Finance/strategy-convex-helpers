@@ -280,7 +280,7 @@ contract StrategyCvxCrvHelper is
             }
         }
 
-        // 3. Lock CVX for CRV
+        // 3. Lock CVX for bveCVX
         uint256 cvxTokenBalance = cvxToken.balanceOf(address(this));
 
         if (cvxTokenBalance > 0) {
