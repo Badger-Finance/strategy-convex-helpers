@@ -6,6 +6,7 @@ from brownie import (
     StrategyCvxCrvHelper,
     StrategyCvxHelper,
     Wei,
+    accounts
 )
 from config import (
     BADGER_DEV_MULTISIG,
@@ -93,6 +94,11 @@ def deploy(sett_config):
     generate_test_assets(deployer, sett_config.test_config.path, Wei("5 ether"))
 
     assert want.balanceOf(deployer.address) > 0
+
+    ## Whitelist from CVX Vault
+    veCVX = interface.ISett(strategy.CVX_VAULT())
+    veGov = accounts.at(veCVX.governance(), force=True)
+    veCVX.approveContractAccess(strategy, {"from": veGov})
 
     return DotMap(
         deployer=deployer,

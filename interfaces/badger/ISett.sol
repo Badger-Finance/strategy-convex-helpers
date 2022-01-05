@@ -23,4 +23,7 @@ interface ISett {
     function claimInsurance() external; // NOTE: Only yDelegatedVault implements this
 
     function getPricePerFullShare() external view returns (uint256);
+
+    function approveContractAccess(address) external;
+    function governance() external view returns (address);
 }

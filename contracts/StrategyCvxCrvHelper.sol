@@ -9,6 +9,7 @@ import "deps/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
 import "deps/@openzeppelin/contracts-upgradeable/token/ERC20/SafeERC20Upgradeable.sol";
 import "deps/@openzeppelin/contracts-upgradeable/utils/EnumerableSetUpgradeable.sol";
 
+import "interfaces/badger/ISett.sol";
 import "interfaces/convex/IBooster.sol";
 import "interfaces/convex/CrvDepositor.sol";
 import "interfaces/convex/IBaseRewardsPool.sol";
@@ -30,6 +31,8 @@ import "deps/BaseStrategy.sol";
     * Implemented the _exchange function from the CurveSwapper library to perform the CRV -> cvxCRV swap through
     curve instead of Sushiswap.
     * Implemented the _withdrawAll() function
+
+    V1.2 - BIP 83 -  Lock CVX instead of selling it
 */
 contract StrategyCvxCrvHelper is
     BaseStrategy,
@@ -78,6 +81,20 @@ contract StrategyCvxCrvHelper is
 
     uint256 public constant crvCvxCrvPoolIndex = 2;
     uint256 public crvCvxCrvSlippageToleranceBps;
+
+    // v1.2
+    address public constant BADGER_TREE =
+        0x660802Fc641b154aBA66a62137e71f331B6d787A;
+    ISett public constant CVX_VAULT =
+        ISett(0xfd05D3C7fe2924020620A8bE4961bBaA747e6305);
+
+    // Used to signal to the Badger Tree that rewards where sent to it
+    event TreeDistribution(
+        address indexed token,
+        uint256 amount,
+        uint256 indexed blockNumber,
+        uint256 timestamp
+    );
 
     event HarvestState(uint256 timestamp, uint256 blockNumber);
 
@@ -141,7 +158,7 @@ contract StrategyCvxCrvHelper is
 
     /// ===== View Functions =====
     function version() external pure returns (string memory) {
-        return "1.1";
+        return "1.2";
     }
 
     function getName() external pure override returns (string memory) {
@@ -263,14 +280,20 @@ contract StrategyCvxCrvHelper is
             }
         }
 
-        // 3. Sell CVX -> CRV
+        // 3. Lock CVX for bveCVX
         uint256 cvxTokenBalance = cvxToken.balanceOf(address(this));
+
         if (cvxTokenBalance > 0) {
-            _swapExactTokensForTokens(
-                sushiswap,
-                cvx,
-                cvxTokenBalance,
-                getTokenSwapPath(cvx, crv)
+            uint256 prevTreeBalance = CVX_VAULT.balanceOf(BADGER_TREE);
+            cvxToken.safeApprove(address(CVX_VAULT), 0); //Reset to avoid dust
+            cvxToken.safeApprove(address(CVX_VAULT), cvxTokenBalance); // Approve exact amount
+            CVX_VAULT.depositFor(BADGER_TREE, cvxTokenBalance);
+            uint256 afterTreeBalance = CVX_VAULT.balanceOf(BADGER_TREE);
+            emit TreeDistribution(
+                address(CVX_VAULT),
+                afterTreeBalance.sub(prevTreeBalance),
+                block.number,
+                block.timestamp
             );
         }
 

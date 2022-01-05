@@ -14,6 +14,7 @@ def generate_test_assets(account, path, amount):
 
     for address in path:
         asset = interface.IERC20(address)
+        asset.approve(router.address, 0, {"from": account})
         asset.approve(router.address, MaxUint256, {"from": account})
 
     # Buy path[n-1] token with "amount" of path[0] token
@@ -21,7 +22,7 @@ def generate_test_assets(account, path, amount):
         0,
         path,
         account,
-        int(time.time()) + 1200, # Now + 20mins,
+        int(time.time()) + 120000000, # Add some time so tests don't fail,
         {"from": account, "value": amount}
     )
 
@@ -44,6 +45,7 @@ def generate_curve_LP_assets(account, amount, sett_config):
         path = [tokens.wbtc, tokens.ibbtc]
         for address in path:
             asset = interface.IERC20(address)
+            asset.approve(router.address, 0, {"from": account})
             asset.approve(router.address, MaxUint256, {"from": account})
 
         router.swapExactTokensForTokens(
@@ -51,7 +53,7 @@ def generate_curve_LP_assets(account, amount, sett_config):
             0,
             path,
             account,
-            int(time.time()) + 1200, # Now + 20mins,
+            int(time.time()) + 120000000, # Add some time so tests don't fail,
             {"from": account}
         )
 
