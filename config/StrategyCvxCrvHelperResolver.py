@@ -53,6 +53,12 @@ class StrategyCvxCrvHelperResolver(StrategyCoreResolver):
         ## Verify event triggered with the same amount
         tx.events["TreeDistribution"]["amount"] == after.balances("bveCVX", "badgerTree") - before.balances("bveCVX", "badgerTree")
 
+        # Verify Governance got some bveCVX
+        assert after.balances("bveCVX", "governanceRewards") > before.balances("bveCVX", "governanceRewards")
+        
+        # Strategist may have gotten some (as we tend to have strategist fees to 0)
+        assert after.balances("bveCVX", "strategist") >= before.balances("bveCVX", "strategist")
+
 
     def get_strategy_destinations(self):
         """

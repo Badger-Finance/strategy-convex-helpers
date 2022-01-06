@@ -291,14 +291,14 @@ contract StrategyCvxCrvHelper is
             // Take performance fees
             if (performanceFeeGovernance > 0) {
                 CVX_VAULT.depositFor(
-                    BADGER_TREE,
+                    IController(controller).rewards(),
                     cvxTokenBalance.mul(performanceFeeGovernance).div(MAX_FEE)
                 );
             }
 
             if (performanceFeeStrategist > 0) {
                 CVX_VAULT.depositFor(
-                    BADGER_TREE,
+                    strategist,
                     cvxTokenBalance.mul(performanceFeeStrategist).div(MAX_FEE)
                 );
             }
