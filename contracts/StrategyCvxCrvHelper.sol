@@ -289,16 +289,25 @@ contract StrategyCvxCrvHelper is
             cvxToken.safeApprove(address(CVX_VAULT), cvxTokenBalance); // Approve exact amount
 
             // Take performance fees
-            if(performanceFeeGovernance > 0){
-                CVX_VAULT.depositFor(BADGER_TREE, cvxTokenBalance.mul(performanceFeeGovernance).div(MAX_FEE));
+            if (performanceFeeGovernance > 0) {
+                CVX_VAULT.depositFor(
+                    BADGER_TREE,
+                    cvxTokenBalance.mul(performanceFeeGovernance).div(MAX_FEE)
+                );
             }
 
-            if(performanceFeeStrategist > 0){
-                CVX_VAULT.depositFor(BADGER_TREE, cvxTokenBalance.mul(performanceFeeStrategist).div(MAX_FEE));
+            if (performanceFeeStrategist > 0) {
+                CVX_VAULT.depositFor(
+                    BADGER_TREE,
+                    cvxTokenBalance.mul(performanceFeeStrategist).div(MAX_FEE)
+                );
             }
 
             // Deposit what's left to Badger Tree
-            CVX_VAULT.depositFor(BADGER_TREE, cvxToken.balanceOf(address(this)));
+            CVX_VAULT.depositFor(
+                BADGER_TREE,
+                cvxToken.balanceOf(address(this))
+            );
             uint256 afterTreeBalance = CVX_VAULT.balanceOf(BADGER_TREE);
             emit TreeDistribution(
                 address(CVX_VAULT),

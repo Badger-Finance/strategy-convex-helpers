@@ -10,6 +10,7 @@ from rich.console import Console
 
 console = Console()
 
+## NOTE: Test is made redundant by StrategyCvxCrvHelperResolver
 @pytest.mark.parametrize(
     "sett_id",
     sett_config.helpers,
