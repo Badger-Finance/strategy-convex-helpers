@@ -47,6 +47,19 @@ class StrategyCvxCrvHelperResolver(StrategyCoreResolver):
             "sett.pricePerFullShare"
         )
 
+        ## Custom check, bcvxCRV sent funds to badgerTree
+        assert after.balances("bveCVX", "badgerTree") > before.balances("bveCVX", "badgerTree")
+        
+        ## Verify event triggered with the same amount
+        assert tx.events["TreeDistribution"]["amount"] == after.balances("bveCVX", "badgerTree") - before.balances("bveCVX", "badgerTree")
+
+        # Verify Governance got some bveCVX
+        assert after.balances("bveCVX", "governanceRewards") > before.balances("bveCVX", "governanceRewards")
+        
+        # Strategist may have gotten some (as we tend to have strategist fees to 0)
+        assert after.balances("bveCVX", "strategist") >= before.balances("bveCVX", "strategist")
+
+
     def get_strategy_destinations(self):
         """
         Track balances for all strategy implementations
@@ -59,6 +72,7 @@ class StrategyCvxCrvHelperResolver(StrategyCoreResolver):
     def add_entity_balances_for_tokens(self, calls, tokenKey, token, entities):
         entities["strategy"] = self.manager.strategy.address
         entities["cvxCrvRewardsPool"] = self.manager.strategy.cvxCrvRewardsPool()
+        entities["badgerTree"] = self.manager.strategy.BADGER_TREE()
 
         super().add_entity_balances_for_tokens(calls, tokenKey, token, entities)
         return calls
@@ -72,7 +86,9 @@ class StrategyCvxCrvHelperResolver(StrategyCoreResolver):
         threeCrv = interface.IERC20(strategy.threeCrv())
         cvxCrv = interface.IERC20(strategy.cvxCrv())
         usdc = interface.IERC20(strategy.usdc())
+        bveCVX = interface.IERC20(strategy.CVX_VAULT())
 
+        calls = self.add_entity_balances_for_tokens(calls, "bveCVX", bveCVX, entities)
         calls = self.add_entity_balances_for_tokens(calls, "crv", crv, entities)
         calls = self.add_entity_balances_for_tokens(calls, "cvx", cvx, entities)
         calls = self.add_entity_balances_for_tokens(calls, "3Crv", threeCrv, entities)

@@ -96,9 +96,10 @@ def deploy(sett_config):
     assert want.balanceOf(deployer.address) > 0
 
     ## Whitelist from CVX Vault
-    veCVX = interface.ISett(strategy.CVX_VAULT())
-    veGov = accounts.at(veCVX.governance(), force=True)
-    veCVX.approveContractAccess(strategy, {"from": veGov})
+    if sett_config.strategyName == "StrategyCvxCrvHelper":
+        veCVX = interface.ISett(strategy.CVX_VAULT())
+        veGov = accounts.at(veCVX.governance(), force=True)
+        veCVX.approveContractAccess(strategy, {"from": veGov})
 
     return DotMap(
         deployer=deployer,
